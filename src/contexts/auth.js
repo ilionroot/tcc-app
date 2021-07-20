@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    // loadData();
+    loadData();
   }, []);
 
   async function loadData() {
