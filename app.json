@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "tcc-app",
-    "slug": "tcc-app",
-    "version": "1.0.0",
+    "name": "Triforce Tracker",
+    "slug": "triforce-tracker",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -13,20 +13,27 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.scolion.triforcetracker"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.scolion.triforcetracker",
+      "softwareKeyboardLayoutMode": "pan"
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#05445E",
+      "barStyle": "light-content",
+      "translucent": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": ""
   }
 }
