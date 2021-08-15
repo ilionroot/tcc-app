@@ -4,13 +4,13 @@ export const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     alignSelf: "center",
-    marginTop: 24,
     width: 300,
     height: 300,
     borderWidth: 16,
     borderColor: "saddlebrown",
     flexDirection: "row",
     flexWrap: "wrap-reverse",
+    borderRadius: 12,
   },
   house: {
     width: 33.5,

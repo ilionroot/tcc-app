@@ -5,7 +5,7 @@ import {
   View,
   Dimensions,
   ActivityIndicator,
-  TouchableOpacity,
+  Platform,
 } from "react-native";
 import {
   styles,
@@ -20,13 +20,13 @@ import {
 import { useAuth } from "../../contexts/auth";
 import { Path, Svg } from "react-native-svg";
 import IoniconIcons from "react-native-vector-icons/Ionicons";
-import Modal from "react-native-modal";
 
-const Login = ({ navigation }) => {
+const Register = ({ navigation }) => {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const staticScreenWidth = useRef(Dimensions.get("window").width);
   const { logIn } = useAuth();
@@ -41,33 +41,6 @@ const Login = ({ navigation }) => {
     // );
   };
 
-  function modalContent() {
-    return (
-      <View style={styles.modalContainer}>
-        <TouchableOpacity
-          activeOpacity={0.5}
-          style={styles.choiceButton}
-          onPress={() => {
-            setIsModalVisible(false);
-            navigation.navigate("Register");
-          }}
-        >
-          <Text style={styles.choiceButtonText}>Create an account</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.5}
-          style={styles.choiceButton}
-          onPress={() => {
-            setIsModalVisible(false);
-            navigation.navigate("ForgotPassword");
-          }}
-        >
-          <Text style={styles.choiceButtonText}>Forgot your password?</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   return (
     <View style={{ flex: 1, zIndex: 999 }}>
       <ImageBackground
@@ -78,14 +51,45 @@ const Login = ({ navigation }) => {
         <Divisor />
         <Text style={styles.title}>Tracker</Text>
 
-        <ControlsView behavior="height">
+        <ControlsView
+          behavior={Platform.select({
+            ios: "padding",
+            android: "height",
+          })}
+        >
           <Input
             placeholder="Username"
             onChangeText={(text) => setUsername(text)}
+            returnKeyType="next"
+            autoCorrect={false}
+            autoCapitalize="none"
+            autoCompleteType="username"
+          />
+          <Input
+            placeholder="Email"
+            onChangeText={(email) => setEmail(email)}
+            returnKeyType="next"
+            keyboardType="email-address"
+            autoCorrect={false}
+            autoCapitalize="none"
+            autoCompleteType="email"
           />
           <Input
             placeholder="Password"
             onChangeText={(text) => setPassword(text)}
+            returnKeyType="done"
+            autoCorrect={false}
+            autoCapitalize="none"
+            autoCompleteType="password"
+            secureTextEntry
+          />
+          <Input
+            placeholder="Confirm Password"
+            onChangeText={(text) => setPassword(text)}
+            returnKeyType="done"
+            autoCorrect={false}
+            autoCapitalize="none"
+            autoCompleteType="password"
             secureTextEntry
           />
           {loading ? (
@@ -107,13 +111,13 @@ const Login = ({ navigation }) => {
                 }
               }}
             >
-              <Text style={styles.loginButtonText}>Login</Text>
+              <Text style={styles.loginButtonText}>Register</Text>
               <HelpButton
                 onPress={() => {
-                  setIsModalVisible(true);
+                  navigation.goBack();
                 }}
               >
-                <IoniconIcons size={25} color="white" name="help" />
+                <IoniconIcons size={25} color="white" name="ios-caret-back" />
               </HelpButton>
             </LoginButton>
           )}
@@ -130,24 +134,9 @@ const Login = ({ navigation }) => {
             fill="#00d2d3"
           />
         </Svg>
-
-        <Modal
-          children={modalContent()}
-          isVisible={isModalVisible}
-          animationIn="zoomIn"
-          animationOut="zoomOut"
-          hideModalContentWhileAnimating
-          style={{ margin: 0 }}
-          onBackButtonPress={() => {
-            setIsModalVisible(false);
-          }}
-          onBackdropPress={() => {
-            setIsModalVisible(false);
-          }}
-        />
       </ImageBackground>
     </View>
   );
 };
 
-export default Login;
+export default Register;

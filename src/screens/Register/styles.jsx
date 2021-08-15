@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 32,
-    paddingTop: "20%",
+    paddingTop: "12.5%",
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "flex-start",
@@ -23,31 +23,6 @@ export const styles = StyleSheet.create({
     width: 173,
     paddingLeft: "30%",
     fontSize: 18,
-  },
-  modalContainer: {
-    backgroundColor: "#ffffff",
-    width: "80%",
-    height: 250,
-    alignSelf: "center",
-    borderRadius: 16,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 12,
-  },
-  choiceButton: {
-    width: "100%",
-    height: 100,
-    backgroundColor: "rgb(0,90,128)",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 8,
-    borderRadius: 16,
-    elevation: 3,
-  },
-  choiceButtonText: {
-    color: "white",
   },
 });
 
@@ -103,5 +78,5 @@ export const ControlsView = styled.KeyboardAvoidingView`
   width: 100%;
   align-items: center;
   justify-content: center;
-  margin-top: 30%;
+  margin-top: 10%;
 `;

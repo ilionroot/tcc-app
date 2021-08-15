@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       return RootNavigation.navigate("App");
     }
 
-    RootNavigation.navigate("Login");
+    RootNavigation.navigate("Authentication");
   }
 
   function logIn(username, password) {
@@ -35,9 +35,9 @@ export const AuthProvider = ({ children }) => {
         })
         .then(async (res) => {
           console.log(res);
-          // await AsyncStorage.setItem("$triforce_tracker_user", res.data);
-          // setUser(res.data);
-          // RootNavigation.navigate("App");
+          await AsyncStorage.setItem("$triforce_tracker_user", res.data);
+          setUser(res.data);
+          RootNavigation.navigate("App");
           resolve(res);
         })
         .catch((err) => {
@@ -50,8 +50,10 @@ export const AuthProvider = ({ children }) => {
     RootNavigation.navigate("Login");
   }
 
+  function sendVerifyEmail(email) {}
+
   return (
-    <AuthContext.Provider value={{ user, logIn, logOut }}>
+    <AuthContext.Provider value={{ user, logIn, logOut, sendVerifyEmail }}>
       {children}
     </AuthContext.Provider>
   );

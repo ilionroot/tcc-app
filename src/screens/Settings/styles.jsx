@@ -14,12 +14,62 @@ export const styles = StyleSheet.create({
   },
   subtitle: {
     color: "white",
-    fontSize: 24,
+    fontSize: 22,
+    fontWeight: "bold",
+  },
+  subSubTitle: {
+    color: "white",
+    fontSize: 20,
   },
   settingsContainer: {},
   sectionBox: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  changePasswordButton: {
+    backgroundColor: "#2881a7",
+
+    width: "100%",
+    height: 75,
+    padding: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+  },
+  changePasswordButtonText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  modalContainer: {
+    backgroundColor: "#ffffffff",
+    width: "100%",
+    marginTop: "25%",
+    alignSelf: "center",
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    padding: 24,
+    paddingTop: 8,
+    overflow: "hidden",
+    paddingBottom: 24,
+  },
+  modalHeader: {
+    width: "100%",
+    height: 75,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  modalHeaderTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "rgba(0,90,128,0.65)",
+  },
+  textInput: {
+    height: 50,
+    borderBottomColor: "rgb(0,90,128)",
+    borderBottomWidth: 1,
+    margin: 12,
   },
 });
 

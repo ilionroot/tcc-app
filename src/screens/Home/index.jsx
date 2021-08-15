@@ -11,7 +11,7 @@
 //   align-self: center;
 // `;
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   TouchableOpacity,
   Text,
@@ -26,7 +26,6 @@ import Modal from "react-native-modal";
 import { LinearGradient } from "expo-linear-gradient";
 import IoniconIcons from "react-native-vector-icons/Ionicons";
 import WifiManager from "react-native-wifi-reborn";
-import api from "../../services/api";
 
 import io from "socket.io-client";
 
@@ -39,6 +38,8 @@ const Home = () => {
   const [wifiList, setWifiList] = useState([]);
   const [device, setDevice] = useState(null);
   const [psts, setPsts] = useState([]);
+  const [players, setPlayers] = useState(["Igor", "Vitor"]);
+  let wifiName = useRef(/^Board/);
 
   function getWifiList() {
     PermissionsAndroid.request(
@@ -56,22 +57,22 @@ const Home = () => {
       const wifiList = await WifiManager.loadWifiList();
 
       const newWifiList = wifiList.filter((wifi) => {
-        return /^Board/.test(wifi.SSID);
+        return wifiName.current.test(wifi.SSID);
       });
 
       setWifiList(newWifiList);
     });
   }
 
-  // function selectDevice() {
-  //   WifiManager.isEnabled().then((res) => {
-  //     if (!res) WifiManager.setEnabled(true);
-  //     setIsModalVisible(true);
-  //     setTimeout(() => {
-  //       Platform.OS === "android" && getWifiList();
-  //     }, 1000);
-  //   });
-  // }
+  function selectDevice() {
+    WifiManager.isEnabled().then((res) => {
+      if (!res) WifiManager.setEnabled(true);
+      setIsModalVisible(true);
+      setTimeout(() => {
+        Platform.OS === "android" && getWifiList();
+      }, 1000);
+    });
+  }
 
   function connectToBoard(SSID) {
     WifiManager.connectToProtectedSSID(SSID, "78558816", false)
@@ -88,28 +89,6 @@ const Home = () => {
         return getWifiList();
       });
   }
-
-  // async function connServer() {
-  //   api
-  //     .get("/pikkas")
-  //     .then((res) => {
-  //       setPsts(res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.message);
-  //     });
-  // }
-
-  // function fetchNewMovement() {
-  //   api
-  //     .get("/pikkas")
-  //     .then((res) => {
-  //       setPsts([...psts, res.data[res.data.length - 1]]);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.message);
-  //     });
-  // }
 
   const DeviceModalContent = () => {
     return (
@@ -171,26 +150,22 @@ const Home = () => {
   };
 
   function verifyConnection() {
-    // setInterval(async () => {
-    //   const isEnabled = await WifiManager.isEnabled();
-    //   if (isEnabled) {
-    //     const isConnected = await WifiManager.connectionStatus();
-    //     const currentSSID = await WifiManager.getCurrentWifiSSID();
-    //     if (isConnected && /^Board/.test(currentSSID)) {
-    //       setDevice(currentSSID);
-    //     } else {
-    //       setDevice(null);
-    //     }
-    //   }
-    // }, 1000);
+    setInterval(async () => {
+      const isEnabled = await WifiManager.isEnabled();
+      if (isEnabled) {
+        const isConnected = await WifiManager.connectionStatus();
+        const currentSSID = await WifiManager.getCurrentWifiSSID();
+        if (isConnected && wifiName.current.test(currentSSID)) {
+          setDevice(currentSSID);
+        } else {
+          setDevice(null);
+        }
+      }
+    }, 1000);
   }
 
   useEffect(() => {
     // verifyConnection();
-    // connServer();
-    // setTimeout(() => {
-    //   setInterval(fetchNewMovement, 2000);
-    // }, 2000);
 
     const socket = io("https://tcc-app-back.herokuapp.com/");
 
@@ -201,6 +176,10 @@ const Home = () => {
 
       socket.on("play", (play) => {
         setPsts([...psts, play]);
+      });
+
+      socket.on("players", (players) => {
+        setPlayers(players);
       });
     });
   }, []);
@@ -222,9 +201,7 @@ const Home = () => {
             />
           </View>
         ) : (
-          <TouchableOpacity
-          // onPress={selectDevice}
-          >
+          <TouchableOpacity onPress={selectDevice}>
             <View style={styles.selectDeviceContainer}>
               <Text style={styles.subtitle}>Select the board</Text>
               <Image
@@ -236,15 +213,33 @@ const Home = () => {
         )}
 
         {device ? (
-          <View>
+          <View style={styles.boardContainer}>
             <Board psts={psts} />
           </View>
         ) : (
           <View>
-            <Text>Not connected!</Text>
+            <Text style={{ color: "white", marginTop: 12 }}>
+              Not connected!
+            </Text>
           </View>
         )}
-        <Board psts={psts} />
+        <View style={styles.boardContainer}>
+          <View style={styles.playerContainer}>
+            <Text style={{ ...styles.playerText, opacity: 0.65 }}>Black:</Text>
+            <Text style={{ ...styles.playerText, opacity: 1 }}>
+              {" "}
+              {players[1]}
+            </Text>
+          </View>
+          <Board psts={psts} />
+          <View style={styles.playerContainer}>
+            <Text style={{ ...styles.playerText, opacity: 0.65 }}>White:</Text>
+            <Text style={{ ...styles.playerText, opacity: 1 }}>
+              {" "}
+              {players[0]}
+            </Text>
+          </View>
+        </View>
       </ImageBackground>
       <Modal
         animationIn="zoomIn"

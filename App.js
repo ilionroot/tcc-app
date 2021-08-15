@@ -1,55 +1,62 @@
 import React, { useState } from "react";
-import { StatusBar, Image, View } from "react-native";
+import { Platform, StatusBar, TouchableOpacity, View } from "react-native";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
 import { setCustomText } from "react-native-global-props";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+
 import { createStackNavigator } from "@react-navigation/stack";
 import LottieView from "lottie-react-native";
 import { AuthProvider } from "./src/contexts/auth";
 import { navigationRef } from "./src/RootNavigation";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 import Login from "./src/screens/Login";
+import Register from "./src/screens/Register";
+import ForgotPassword from "./src/screens/ForgotPassword";
 import Home from "./src/screens/Home";
 import Settings from "./src/screens/Settings";
 
-const TabStack = createBottomTabNavigator();
+const AppStack = createMaterialBottomTabNavigator();
+const AuthenticationStack = createStackNavigator();
 const RootStack = createStackNavigator();
+
+const AuthenticationRoutes = () => {
+  return (
+    <AuthenticationStack.Navigator
+      screenOptions={{
+        header: () => {},
+      }}
+      initialRouteName="Login"
+    >
+      <AuthenticationStack.Screen name="Login" component={Login} />
+      <AuthenticationStack.Screen name="Register" component={Register} />
+      <AuthenticationStack.Screen
+        name="ForgotPassword"
+        component={ForgotPassword}
+      />
+    </AuthenticationStack.Navigator>
+  );
+};
 
 const AppRoutes = () => {
   return (
-    <TabStack.Navigator
-      tabBarOptions={{
-        showLabel: false,
-        style: {
-          height: 100,
-          width: "100%",
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#189AB4",
-          overflow: "hidden",
-        },
-        tabStyle: {
-          width: "50%",
-          height: "100%",
-        },
-      }}
+    <AppStack.Navigator
+      activeColor="#ffffff"
+      inactiveColor="#005a7c"
+      barStyle={{ backgroundColor: "#005a7c", paddingVertical: 12 }}
+      shifting
       initialRouteName="Home"
     >
-      <TabStack.Screen
+      <AppStack.Screen
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <Image
-                style={{ width: 32, height: 32 }}
-                source={require("./src/assets/icons/homeIcon.png")}
+              <AntDesign
+                name="home"
+                size={24}
+                color={focused ? "white" : "black"}
               />
             );
           },
@@ -57,21 +64,32 @@ const AppRoutes = () => {
         name="Home"
         component={Home}
       />
-      <TabStack.Screen
+
+      <AppStack.Screen
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <Image
-                style={{ width: 32, height: 32 }}
-                source={require("./src/assets/icons/settingsIcon.png")}
+              <AntDesign
+                name="user"
+                size={24}
+                color={focused ? "white" : "black"}
               />
             );
           },
+          // tabBarLabel: ({ focused }) => {
+          //   return (
+          //     <Text
+          //       style={{ marginBottom: 8, color: focused ? "white" : "black" }}
+          //     >
+          //       Settings
+          //     </Text>
+          //   );
+          // },
         }}
         name="Settings"
         component={Settings}
       />
-    </TabStack.Navigator>
+    </AppStack.Navigator>
   );
 };
 
@@ -84,7 +102,10 @@ const RootRoutes = (props) => {
 
   return (
     <RootStack.Navigator initialRouteName="App" headerMode="none">
-      <RootStack.Screen name="Login" component={Login} />
+      <RootStack.Screen
+        name="Authentication"
+        component={AuthenticationRoutes}
+      />
       <RootStack.Screen name="App" component={AppRoutes} />
     </RootStack.Navigator>
   );

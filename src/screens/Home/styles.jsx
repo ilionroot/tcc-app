@@ -45,6 +45,21 @@ export const styles = StyleSheet.create({
     fontSize: 36,
     color: "black",
   },
+  boardContainer: {},
+  playerContainer: {
+    backgroundColor: "rgba(0,90,128,0.5)",
+    padding: 18,
+    margin: 18,
+    width: 300,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 12,
+  },
+  playerText: {
+    color: "white",
+    fontWeight: "bold",
+  },
 });
 
 export const Divisor = styled.View`
