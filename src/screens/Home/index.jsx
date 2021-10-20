@@ -30,6 +30,8 @@ import WifiManager from "react-native-wifi-reborn";
 import io from "socket.io-client";
 
 import Board from "../../components/Board";
+import useTimer from "../../hooks/useTimer";
+import { formatTime } from "../../utils";
 
 import { styles, Divisor, Device } from "./styles";
 
@@ -39,6 +41,19 @@ const Home = () => {
   const [device, setDevice] = useState(null);
   const [psts, setPsts] = useState([]);
   const [players, setPlayers] = useState(["Igor", "Vitor"]);
+  const [whiteCron, setWhiteCron] = useState(0);
+  const [blackCron, setBlackCron] = useState("0");
+  const {
+    timer,
+    isActive,
+    isPaused,
+    handleStart,
+    handlePause,
+    handleReset,
+    handleResume,
+  } = useTimer(0);
+
+  const count = useRef(null);
   let wifiName = useRef(/^Board/);
 
   function getWifiList() {
@@ -225,20 +240,58 @@ const Home = () => {
         )}
         <View style={styles.boardContainer}>
           <View style={styles.playerContainer}>
-            <Text style={{ ...styles.playerText, opacity: 0.65 }}>Black:</Text>
-            <Text style={{ ...styles.playerText, opacity: 1 }}>
-              {" "}
-              {players[1]}
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ ...styles.playerText, opacity: 0.65 }}>
+                Black:
+              </Text>
+              <Text style={{ ...styles.playerText, opacity: 1 }}>
+                {players[1]}
+              </Text>
+            </View>
+            <Text
+              style={{
+                ...styles.playerText,
+                opacity: 1,
+              }}
+            >
+              {`Time - ${timer}`}
             </Text>
           </View>
           <Board psts={psts} />
           <View style={styles.playerContainer}>
-            <Text style={{ ...styles.playerText, opacity: 0.65 }}>White:</Text>
-            <Text style={{ ...styles.playerText, opacity: 1 }}>
-              {" "}
-              {players[0]}
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ ...styles.playerText, opacity: 0.65 }}>
+                White:
+              </Text>
+              <Text style={{ ...styles.playerText, opacity: 1 }}>
+                {players[0]}
+              </Text>
+            </View>
+            <Text
+              style={{
+                ...styles.playerText,
+                opacity: 1,
+              }}
+            >
+              {`Time - ${blackCron}`}
             </Text>
           </View>
+          {!isActive && !isPaused ? (
+            <TouchableOpacity onPress={handleStart}>
+              <Text>Start</Text>
+            </TouchableOpacity>
+          ) : isPaused ? (
+            <TouchableOpacity onPress={handlePause}>
+              <Text>Pause</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={handleResume}>
+              <Text>Resume</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={handleReset}>
+            <Text>Reset</Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
       <Modal

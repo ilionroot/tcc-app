@@ -109,6 +109,7 @@ const ForgotPassword = ({ navigation }) => {
               <HelpButton
                 onPress={() => {
                   setSended(true);
+                  navigation.navigate("Login");
                 }}
               >
                 <IoniconIcons size={25} color="white" name="ios-caret-back" />
