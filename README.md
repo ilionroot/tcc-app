@@ -1,4 +1,4 @@
-### TRIFORCE BOARD CHESS
+### TRIFORCE TRACKER
 
 _This app is in develepoment_
 
