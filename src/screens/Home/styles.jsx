@@ -54,6 +54,7 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     borderRadius: 12,
   },
   playerText: {

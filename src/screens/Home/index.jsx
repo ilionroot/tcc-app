@@ -30,6 +30,9 @@ import WifiManager from "react-native-wifi-reborn";
 import io from "socket.io-client";
 
 import Board from "../../components/Board";
+import useWhiteTimer from "../../hooks/useWhiteTimer";
+import useBlackTimer from "../../hooks/useBlackTimer";
+import { formatTime } from "../../utils";
 
 import { styles, Divisor, Device } from "./styles";
 
@@ -39,6 +42,26 @@ const Home = () => {
   const [device, setDevice] = useState(null);
   const [psts, setPsts] = useState([]);
   const [players, setPlayers] = useState(["Igor", "Vitor"]);
+  const {
+    whiteTimer,
+    isWhiteActive,
+    isWhitePaused,
+    handleWhiteStart,
+    handleWhitePause,
+    handleWhiteReset,
+    handleWhiteResume,
+  } = useWhiteTimer(0);
+  const {
+    blackTimer,
+    isBlackActive,
+    isBlackPaused,
+    handleBlackStart,
+    handleBlackPause,
+    handleBlackReset,
+    handleBlackResume,
+  } = useBlackTimer(0);
+
+  const count = useRef(null);
   let wifiName = useRef(/^Board/);
 
   function getWifiList() {
@@ -164,6 +187,17 @@ const Home = () => {
     }, 1000);
   }
 
+  const handleStart = () => {
+    handleWhiteStart();
+    handleBlackStart();
+    handleBlackPause();
+  };
+
+  const handleReset = () => {
+    handleWhiteReset();
+    handleBlackReset();
+  };
+
   useEffect(() => {
     verifyConnection();
 
@@ -226,21 +260,112 @@ const Home = () => {
           </View>
         )}
         <View style={styles.boardContainer}>
-          <View style={styles.playerContainer}>
-            <Text style={{ ...styles.playerText, opacity: 0.65 }}>Black:</Text>
-            <Text style={{ ...styles.playerText, opacity: 1 }}>
-              {" "}
-              {players[1]}
-            </Text>
-          </View>
+          {!isWhitePaused ? (
+            <TouchableOpacity
+              style={{ ...styles.playerContainer, backgroundColor: "black" }}
+              onPress={() => {
+                handleBlackPause();
+                handleWhiteResume();
+              }}
+            >
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{ ...styles.playerText, opacity: 0.65 }}>
+                  Black:
+                </Text>
+                <Text style={{ ...styles.playerText, opacity: 1 }}>
+                  {players[1]}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  ...styles.playerText,
+                  opacity: 1,
+                }}
+              >
+                {`${formatTime(blackTimer)}`}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.playerContainer}>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{ ...styles.playerText, opacity: 0.65 }}>
+                  Black:
+                </Text>
+                <Text style={{ ...styles.playerText, opacity: 1 }}>
+                  {players[1]}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  ...styles.playerText,
+                  opacity: 1,
+                }}
+              >
+                {`${formatTime(blackTimer)}`}
+              </Text>
+            </View>
+          )}
           <Board psts={psts} />
-          <View style={styles.playerContainer}>
-            <Text style={{ ...styles.playerText, opacity: 0.65 }}>White:</Text>
-            <Text style={{ ...styles.playerText, opacity: 1 }}>
-              {" "}
-              {players[0]}
-            </Text>
-          </View>
+          {!isBlackPaused ? (
+            <TouchableOpacity
+              style={{ ...styles.playerContainer, backgroundColor: "white" }}
+              onPress={() => {
+                handleWhitePause();
+                handleBlackResume();
+              }}
+            >
+              <View style={{ flexDirection: "row" }}>
+                <Text
+                  style={{
+                    ...styles.playerText,
+                    opacity: 0.65,
+                    color: "black",
+                  }}
+                >
+                  White:
+                </Text>
+                <Text
+                  style={{ ...styles.playerText, opacity: 1, color: "black" }}
+                >
+                  {players[0]}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  ...styles.playerText,
+                  opacity: 1,
+                  color: "black",
+                }}
+              >
+                {`${formatTime(whiteTimer)}`}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={{ ...styles.playerContainer }}>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{ ...styles.playerText, opacity: 0.65 }}>
+                  White:
+                </Text>
+                <Text style={{ ...styles.playerText, opacity: 1 }}>
+                  {players[0]}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  ...styles.playerText,
+                  opacity: 1,
+                }}
+              >
+                {`${formatTime(whiteTimer)}`}
+              </Text>
+            </View>
+          )}
+          <TouchableOpacity onPress={handleStart}>
+            <Text>Start</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleReset}>
+            <Text>Reset</Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
       <Modal
