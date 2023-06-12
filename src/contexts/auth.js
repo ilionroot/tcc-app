@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }) => {
           resolve(res);
         })
         .catch((err) => {
+          RootNavigation.navigate("App");
           reject(err);
         });
     });

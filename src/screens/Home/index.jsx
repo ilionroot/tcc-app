@@ -165,7 +165,7 @@ const Home = () => {
   }
 
   useEffect(() => {
-    // verifyConnection();
+    verifyConnection();
 
     const socket = io("https://tcc-app-back.herokuapp.com/");
 
@@ -194,7 +194,9 @@ const Home = () => {
         <Divisor />
         {device ? (
           <View style={styles.selectDeviceContainer}>
-            <Text style={styles.subtitle}>{device}</Text>
+            <Text style={styles.subtitle}>
+              {device ? device : "Board Apresentation"}
+            </Text>
             <Image
               style={styles.wifiIcon}
               source={require("../../assets/icons/wifiIcon.png")}
